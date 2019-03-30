@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>791</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>HomeWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>791</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuCategories">
+    <property name="title">
+     <string>Categories</string>
+    </property>
+    <addaction name="catList"/>
+    <addaction name="catNew"/>
+   </widget>
+   <widget class="QMenu" name="menuPosts">
+    <property name="title">
+     <string>Posts</string>
+    </property>
+    <addaction name="postList"/>
+    <addaction name="postNew"/>
+   </widget>
+   <addaction name="menuCategories"/>
+   <addaction name="menuPosts"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="catList">
+   <property name="text">
+    <string>List</string>
+   </property>
+  </action>
+  <action name="catNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="postList">
+   <property name="text">
+    <string>List</string>
+   </property>
+  </action>
+  <action name="postNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
