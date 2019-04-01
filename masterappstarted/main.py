@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTableWidgetItem, QMessageBox
 from MainWindow import Ui_MainWindow
 from CategoryNew import Ui_CategoryNewOrUpdate
 from CategoryWindow import Ui_CategoyWindow
@@ -46,18 +46,36 @@ class CategoryNewWindow(QWidget):
   catdesc = self.ui.catDesc.text()
   print(catdesc)
   print(catname)
-  sql = '''INSERT INTO Categories
-  (NAME, DESC)
-  VALUES(?, ?);'''
-  conn.execute(sql,[catname, catdesc]) 
-  conn.commit()
+  try:
+   sql = '''INSERT INTO Categories
+   (NAME, DESC)
+   VALUES(?, ?);'''
+   conn.execute(sql,[catname, catdesc]) 
+   conn.commit()
+   QMessageBox.information(QMessageBox(),'Successful','Category is added successfully to the database.')
+   self.close()
+  except Exception:
+   QMessageBox.warning(QMessageBox(), 'Error', 'Could not add student to the database.')
 
 
 class CategoryListWindow(QMainWindow):
  def __init__(self):
   super().__init__()
-  self.ui = Ui_CategoyWindow()
+  self.ui = Ui_CategoyWindow()  
   self.ui.setupUi(self)
+  #load data to table widget
+  sql='''SELECT *FROM Categories'''
+  result = conn.execute(sql)
+  #setting to tablewidget
+  self.ui.CatTableWidget.setRowCount(0)
+  self.ui.CatTableWidget.setColumnCount(3)
+  self.ui.CatTableWidget.setHorizontalHeaderLabels(("Id.", "Name", "Descriptiom"))
+  #end setting to tablewidget
+  for row_number, row_data in enumerate(result):
+   self.ui.CatTableWidget.insertRow(row_number)
+   for column_number, data in enumerate(row_data):
+    self.ui.CatTableWidget.setItem(row_number, column_number,QTableWidgetItem(str(data)))
+  #end load data to table widget
   self.show()  
 
 class AppWindow(QMainWindow):
