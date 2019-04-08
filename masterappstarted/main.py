@@ -1,9 +1,10 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTableWidgetItem, QMessageBox, QVBoxLayout
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTableWidgetItem, QMessageBox, QVBoxLayout, QHBoxLayout
 from MainWindow import Ui_MainWindow
 from CategoryNew import Ui_CategoryNewOrUpdate
 from CategoryWindow import Ui_CategoyWindow
-
+from Mostofa.LinkLabel import LinkLabel
 # web view
 from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
 
@@ -11,6 +12,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
 import sqlite3
 import os.path
 
+from PyQt5.QtCore import pyqtSlot
 
 # database
 
@@ -47,7 +49,12 @@ class CategoryNewWindow(QWidget):
   self.ui = Ui_CategoryNewOrUpdate()
   self.ui.setupUi(self)
   self.show()
-
+ 
+ def make_connection(self, labelObject):
+  labelObject.changedValue.connect(self.setCatName)
+ @pyqtSlot(int)
+ def setCatName(self, val):
+  self.ui.catName.setText(str(val))
  def saveOrUpdateCat(self):
   catname = self.ui.catName.text()
   catdesc = self.ui.catDesc.text()
@@ -96,33 +103,29 @@ class AppWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
-        # web view
+        self.ui.setupUi(self)        
         centralWidget = QWidget()
-        layout = QVBoxLayout()
-        centralWidget.setLayout(layout)
+        #centralWidget.resize(200,300)			
+        layout = QVBoxLayout()		
+        hbox = QHBoxLayout()
+        hbox.addLayout(layout)
+        #hbox.addStretch(1)
+        anotherwidget = CategoryNewWindow()
+        hbox.addWidget(anotherwidget)
+        centralWidget.setLayout(hbox)
         self.setCentralWidget(centralWidget)
-        view = QWebView()
-        sql = '''SELECT *FROM Categories'''
+        sql = 'SELECT *FROM Categories LIMIT 0,2'
         result = conn.execute(sql)
-        html = '''<html>
-          <head>
-          <title>A Sample Page</title>
-          </head>
-          <body>'''
+        i=20;
         for row in result:
-         #print(text)
-         html += '''
-          <h1>'''+row[1]+'''</h1>
-          <hr />'''
-        
-         html+='''
-          </body>
-          </html>'''
-        view.setHtml(html)
-        layout.addWidget(view)        
-        # web view
-        
+         l = LinkLabel()
+         l.linkId=row[0]
+         l.setText(row[1])
+         l.setGeometry(QtCore.QRect(150, i, 200, 20))
+         anotherwidget.make_connection(l)
+         i=i+20
+         layout.addWidget(l)
+		
         self.show()
     def showNewCategory(self,conn):
      # self.hide()
